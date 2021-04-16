@@ -1,6 +1,6 @@
 /*
  * File:   interr_2.c
- * Author: Jimmy e Dariel
+ * Author: Dariel Arian Acosta Campos e Jimy Li Yan
  *
  * Created on 2021?4?14?, ??4:58
  */
@@ -22,27 +22,37 @@
 #define Fechando PORTDbits.RD7
 #define Abrindo PORTDbits.RD6
 
-int flag = 0;
+int flag;
+int time;
 
 void __interrupt() trem(void){
     if (INTF){
-        flag = 1;
+        INTCONbits.INTF = 0;
         Sirene = 1;
-        if(SA == 0){            //se senor do carro ta acionado
-            __delay_ms(20000);
-            
+        Fechando = 0;
+        Abrindo = 0;
+        if(SCA == 0){            //se senor de cancela aberta ta acionado
+            for(time = 20-time;time>0;time--){
+                __delay_ms(1000);
+            }
+            MCF = 1;            //Motor cancela fechado ativo
+            MCA = 0;
+            Fechando = 1;
         }
-        if(SCA == 0){           //se sensor de cancela fechado nao esta ligado
+        /*if(SCA == 0){           //se sensor de cancela fechado nao esta ligado
             MCF = 1;            //motor de cancela fecha
             MCA = 0;
             Fechando = 1;       //led fechando ligado
             Abrindo = 0;
-        }
+        }*/
         if(SCF == 0){            //se sensor de cancela fechado
             MCF = 0;
             MCA = 0;
             Fechando = 0;
         }
+    __delay_ms(500);
+    flag = 1;
+    time = 21;
     }
     return;
 }
@@ -59,24 +69,34 @@ void main(void) {
     INTCON = 0b10010000; //ativa os bits GIE e INTE, ou seja, a interrup??o externa
                         //atrav?s do pino RB0
     while(1){
+        flag = 0;
+        Sirene = 0;
         if(SA == 0 && flag == 0){                //Se tem o carro
             MCA = 1;                //motor de cancela abrindo
             MCF = 0;
             Abrindo = 1;            //Led abrindo ligado
+            Fechando = 0;
+            //Sirene = 0;
         }
         if(SCA == 0 && flag == 0){           //se sensor de cancela aberta ta ligado 
             MCA = 0;            //entao desliga o motor
             MCF = 0;
+            Fechando = 0;
             Abrindo = 0;        //e desliga o led abrindo
-            __delay_ms(20000);      //delay de 20s
+            for(time = 1;time<21;time++){
+                __delay_ms(1000);      //delay de 20s
+            }
             MCF = 1;                //depois de 20s, aciona motor de cancela fechando
             MCA = 0;
             Fechando = 1;           //liga o led fechando
+            //Sirene = 0;
         }
         if(SCF == 0 && flag == 0){               //se sensor de cancela fechada ta acionado
             MCF = 0;                //desliga o motro de cancela fechando
             MCA = 0;
             Fechando = 0;           //desliga o led fechando
+            Abrindo = 0;
+            //Sirene = 0;
         }
     }
     return;

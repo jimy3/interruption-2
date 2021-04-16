@@ -1826,23 +1826,37 @@ extern int sprintf(char *, const char *, ...);
 extern int printf(const char *, ...);
 # 11 "interr_2.c" 2
 # 25 "interr_2.c"
-int flag = 0;
+int flag;
+int time;
 
 void __attribute__((picinterrupt(("")))) trem(void){
     if (INTF){
-        flag = 1;
+        INTCONbits.INTF = 0;
         PORTBbits.RB7 = 1;
-        if(PORTBbits.RB2 != 0){
+        PORTDbits.RD7 = 0;
+        PORTDbits.RD6 = 0;
+        if(PORTBbits.RB3 == 0){
+            for(time = 20-time;time>0;time--){
+                _delay((unsigned long)((1000)*(4000000/4000.0)));
+            }
             PORTBbits.RB6 = 1;
             PORTBbits.RB5 = 0;
             PORTDbits.RD7 = 1;
-            PORTDbits.RD6 = 0;
         }
+
+
+
+
+
+
         if(PORTBbits.RB2 == 0){
             PORTBbits.RB6 = 0;
             PORTBbits.RB5 = 0;
             PORTDbits.RD7 = 0;
         }
+    _delay((unsigned long)((500)*(4000000/4000.0)));
+    flag = 1;
+    time = 21;
     }
     return;
 }
@@ -1859,24 +1873,34 @@ void main(void) {
     INTCON = 0b10010000;
 
     while(1){
+        flag = 0;
+        PORTBbits.RB7 = 0;
         if(PORTBbits.RB1 == 0 && flag == 0){
             PORTBbits.RB5 = 1;
             PORTBbits.RB6 = 0;
             PORTDbits.RD6 = 1;
+            PORTDbits.RD7 = 0;
+
         }
         if(PORTBbits.RB3 == 0 && flag == 0){
             PORTBbits.RB5 = 0;
             PORTBbits.RB6 = 0;
+            PORTDbits.RD7 = 0;
             PORTDbits.RD6 = 0;
-            _delay((unsigned long)((20000)*(4000000/4000.0)));
+            for(time = 1;time<21;time++){
+                _delay((unsigned long)((1000)*(4000000/4000.0)));
+            }
             PORTBbits.RB6 = 1;
             PORTBbits.RB5 = 0;
             PORTDbits.RD7 = 1;
+
         }
         if(PORTBbits.RB2 == 0 && flag == 0){
             PORTBbits.RB6 = 0;
             PORTBbits.RB5 = 0;
             PORTDbits.RD7 = 0;
+            PORTDbits.RD6 = 0;
+
         }
     }
     return;
