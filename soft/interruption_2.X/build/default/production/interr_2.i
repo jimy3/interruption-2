@@ -1839,24 +1839,21 @@ void __attribute__((picinterrupt(("")))) trem(void){
             for(time = 20-time;time>0;time--){
                 _delay((unsigned long)((1000)*(4000000/4000.0)));
             }
-            PORTBbits.RB6 = 1;
-            PORTBbits.RB5 = 0;
-            PORTDbits.RD7 = 1;
+            while(PORTBbits.RB2 == 1){
+                PORTBbits.RB6 = 1;
+                PORTBbits.RB5 = 0;
+                PORTDbits.RD7 = 1;
+            }
+
         }
-
-
-
-
-
-
         if(PORTBbits.RB2 == 0){
             PORTBbits.RB6 = 0;
             PORTBbits.RB5 = 0;
             PORTDbits.RD7 = 0;
         }
-    _delay((unsigned long)((500)*(4000000/4000.0)));
     flag = 1;
     time = 21;
+    _delay((unsigned long)((40000)*(4000000/4000.0)));
     }
     return;
 }
@@ -1890,9 +1887,12 @@ void main(void) {
             for(time = 1;time<21;time++){
                 _delay((unsigned long)((1000)*(4000000/4000.0)));
             }
-            PORTBbits.RB6 = 1;
-            PORTBbits.RB5 = 0;
-            PORTDbits.RD7 = 1;
+            while(PORTBbits.RB2 == 1 && flag ==0){
+                PORTBbits.RB6 = 1;
+                PORTBbits.RB5 = 0;
+                PORTDbits.RD7 = 1;
+            }
+
 
         }
         if(PORTBbits.RB2 == 0 && flag == 0){

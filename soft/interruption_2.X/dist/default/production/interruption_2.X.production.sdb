@@ -13,7 +13,7 @@
 [v ___memcpyee __memcpyee `(v  1 e 1 0 ]
 "28 C:\Users\Jimmy\MPLABXProjects\interruption-2\soft\interruption_2.X\interr_2.c
 [v _trem trem `II(v  1 e 1 0 ]
-"60
+"57
 [v _main main `(v  1 e 1 0 ]
 [s S55 . 1 `uc 1 RB0 1 0 :1:0 
 `uc 1 RB1 1 0 :1:1 
@@ -70,7 +70,7 @@
 [v _flag flag `i  1 e 2 0 ]
 "26
 [v _time time `i  1 e 2 0 ]
-"60
+"57
 [v _main main `(v  1 e 1 0 ]
 {
 "103
@@ -78,5 +78,5 @@
 "28
 [v _trem trem `II(v  1 e 1 0 ]
 {
-"58
+"55
 } 0
