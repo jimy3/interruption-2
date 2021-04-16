@@ -1825,12 +1825,59 @@ extern int vsscanf(const char *, const char *, va_list) __attribute__((unsupport
 extern int sprintf(char *, const char *, ...);
 extern int printf(const char *, ...);
 # 11 "interr_2.c" 2
+# 25 "interr_2.c"
+int flag = 0;
 
-
-
+void __attribute__((picinterrupt(("")))) trem(void){
+    if (INTF){
+        flag = 1;
+        PORTBbits.RB7 = 1;
+        if(PORTBbits.RB2 != 0){
+            PORTBbits.RB6 = 1;
+            PORTBbits.RB5 = 0;
+            PORTDbits.RD7 = 1;
+            PORTDbits.RD6 = 0;
+        }
+        if(PORTBbits.RB2 == 0){
+            PORTBbits.RB6 = 0;
+            PORTBbits.RB5 = 0;
+            PORTDbits.RD7 = 0;
+        }
+    }
+    return;
+}
 
 void main(void) {
-    TRISB = 0;
-    PORTBbits.RB1 = 1;
+    TRISB = 0b00011111;
+    TRISD = 0b00000000;
+    OPTION_REG = 0b01111111;
+    PORTBbits.RB5 = 0;
+    PORTBbits.RB6 = 0;
+    PORTBbits.RB7 = 0;
+    PORTDbits.RD7 = 0;
+    PORTDbits.RD6 = 0;
+    INTCON = 0b10010000;
+
+    while(1){
+        if(PORTBbits.RB1 == 0 && flag == 0){
+            PORTBbits.RB5 = 1;
+            PORTBbits.RB6 = 0;
+            PORTDbits.RD6 = 1;
+        }
+        if(PORTBbits.RB3 == 0 && flag == 0){
+            PORTBbits.RB5 = 0;
+            PORTBbits.RB6 = 0;
+            PORTDbits.RD6 = 0;
+            _delay((unsigned long)((20000)*(4000000/4000.0)));
+            PORTBbits.RB6 = 1;
+            PORTBbits.RB5 = 0;
+            PORTDbits.RD7 = 1;
+        }
+        if(PORTBbits.RB2 == 0 && flag == 0){
+            PORTBbits.RB6 = 0;
+            PORTBbits.RB5 = 0;
+            PORTDbits.RD7 = 0;
+        }
+    }
     return;
 }
